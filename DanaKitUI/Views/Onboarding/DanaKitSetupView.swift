@@ -6,7 +6,7 @@ struct DanaKitSetupView: View {
     @Environment(\.dismissAction) private var dismiss
     @State var value: Int = 2
 
-    private let allowedOptions: [Int] = [1, 2]
+    private let allowedOptions: [Int] = [0, 1, 2]
     let nextAction: (Int) -> Void
 
     var body: some View {
@@ -40,6 +40,22 @@ struct DanaKitSetupView: View {
                             set: { isSelected in
                                 if isSelected {
                                     self.value = 1
+                                }
+                            }
+                        )
+                    )
+
+                    CheckmarkListItem(
+                        title: Text(LocalizedString("DanaRS v1/v2", comment: "danaRS v1 option text for DanaKitSetupView")),
+                        description: Text(LocalizedString(
+                            "Older DanaRS pumps with firmware version 1 or 2. Requires the 4-digit password set on the pump.",
+                            comment: "danaRS v1 description"
+                        )),
+                        isSelected: Binding(
+                            get: { self.value == 0 },
+                            set: { isSelected in
+                                if isSelected {
+                                    self.value = 0
                                 }
                             }
                         )

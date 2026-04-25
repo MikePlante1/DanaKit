@@ -29,7 +29,7 @@ public struct DanaKitPumpManagerState: RawRepresentable, Equatable {
         encryptionMode = rawValue["encryptionMode"] as? UInt8 ?? DanaKitPumpManagerState.getEncryptionMode(hwModel)
         isInFetchHistoryMode = rawValue["isInFetchHistoryMode"] != nil
         ignorePassword = rawValue["ignorePassword"] as? Bool ?? false
-        devicePassword = rawValue["devicePassword"] as? UInt16 ?? 0
+        devicePassword = (rawValue["devicePassword"] as? Int).map { UInt16($0) } ?? rawValue["devicePassword"] as? UInt16 ?? 0
         isOnBoarded = rawValue["isOnBoarded"] as? Bool ?? false
         basalDeliveryDate = rawValue["basalDeliveryDate"] as? Date ?? Date.now
         pumpTime = rawValue["pumpTime"] as? Date
@@ -151,7 +151,7 @@ public struct DanaKitPumpManagerState: RawRepresentable, Equatable {
         value["encryptionMode"] = encryptionMode
         value["isInFetchHistoryMode"] = isInFetchHistoryMode
         value["ignorePassword"] = ignorePassword
-        value["devicePassword"] = devicePassword
+        value["devicePassword"] = Int(devicePassword)
         value["insulinType"] = insulinType?.rawValue
         value["bolusSpeed"] = bolusSpeed.rawValue
         value["isOnBoarded"] = isOnBoarded
@@ -325,7 +325,6 @@ public struct DanaKitPumpManagerState: RawRepresentable, Equatable {
 
     mutating func resetState() {
         ignorePassword = false
-        devicePassword = 0
         isInFetchHistoryMode = false
     }
 

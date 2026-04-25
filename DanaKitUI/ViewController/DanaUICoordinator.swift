@@ -8,6 +8,7 @@ enum DanaUIScreen {
     case firstRunScreen
     case danarsv3Explaination
     case danaiExplaination
+    case danarsv1PasswordEntry
     case insulinConfirmationScreen
     case bolusSpeedScreen
     case deviceScanningScreen
@@ -21,6 +22,8 @@ enum DanaUIScreen {
         case .danarsv3Explaination:
             return .insulinConfirmationScreen
         case .danaiExplaination:
+            return .insulinConfirmationScreen
+        case .danarsv1PasswordEntry:
             return .insulinConfirmationScreen
         case .insulinConfirmationScreen:
             return .bolusSpeedScreen
@@ -113,13 +116,20 @@ class DanaUICoordinator: UINavigationController, PumpManagerOnboarding, Completi
         case .firstRunScreen:
             let view = DanaKitSetupView(
                 nextAction: goToExplaination
-            ) // self.allowDebugFeatures ? { self.navigateTo(.debugView) } : {})
+            )
             return hostingController(rootView: view)
         case .danarsv3Explaination:
             let view = DanaRSv3Explaination(nextAction: stepFinished)
             return hostingController(rootView: view)
         case .danaiExplaination:
             let view = DanaIExplainationView(nextAction: stepFinished)
+            return hostingController(rootView: view)
+        case .danarsv1PasswordEntry:
+            let next: (UInt16) -> Void = { password in
+                self.pumpManager?.state.devicePassword = password
+                self.stepFinished()
+            }
+            let view = DanaKitPasswordEntryView(nextAction: next)
             return hostingController(rootView: view)
         case .insulinConfirmationScreen:
             let confirm: (InsulinType) -> Void = { confirmedType in
@@ -214,6 +224,9 @@ class DanaUICoordinator: UINavigationController, PumpManagerOnboarding, Completi
 
     func goToExplaination(_ index: Int) {
         switch index {
+        case 0:
+            navigateTo(.danarsv1PasswordEntry)
+            return
         case 1:
             navigateTo(.danarsv3Explaination)
             return

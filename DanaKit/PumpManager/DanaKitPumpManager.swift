@@ -544,8 +544,11 @@ extension DanaKitPumpManager: PumpManager {
                 case HistoryCode.RECORD_TYPE_PRIME:
                     guard let value = item.value, value < 1 else {
                         // This is a tube refill, not a canulla refill
+                        self.log.info("[CAGE/IAGE Debug] RECORD_TYPE_PRIME: value=\(item.value ?? -1) >= 1, treating as tube refill — skipping")
                         return []
                     }
+
+                    self.log.info("[CAGE/IAGE Debug] RECORD_TYPE_PRIME: cannula prime detected, value=\(value), timestamp=\(item.timestamp) — emitting .replaceComponent(.infusionSet) + .prime")
 
                     if self.state.cannulaDate == nil {
                         self.state.cannulaDate = item.timestamp
@@ -573,6 +576,8 @@ extension DanaKitPumpManager: PumpManager {
                     ]
 
                 case HistoryCode.RECORD_TYPE_REFILL:
+                    self.log.info("[CAGE/IAGE Debug] RECORD_TYPE_REFILL: reservoir refill detected, value=\(item.value ?? -1), timestamp=\(item.timestamp) — emitting .rewind + .replaceComponent(.reservoir)")
+
                     if self.state.reservoirDate == nil {
                         self.state.reservoirDate = item.timestamp
                     } else if let reservoirDate = self.state.reservoirDate, item.timestamp > reservoirDate {

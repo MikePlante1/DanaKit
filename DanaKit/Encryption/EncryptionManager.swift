@@ -112,7 +112,10 @@ enum DanaKitEncryption {
 
         if let randomSyncKey = randomSyncKey {
             self.randomSyncKey = decryptionRandomSyncKey(randomSyncKey: randomSyncKey, randomPairingKey: randomPairingKey)
-        } else {
+        } else if pairingKey.count >= 6 {
+            // initialRandomSyncKey requires a 6-byte key (RSv3/Dana-i).
+            // DEFAULT encryption (DanaRS v1) uses a 2-byte pairing key and
+            // does not use second-level encryption, so randomSyncKey is unused.
             self.randomSyncKey = initialRandomSyncKey(pairingKey: pairingKey)
         }
     }

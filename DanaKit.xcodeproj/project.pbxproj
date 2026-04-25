@@ -132,6 +132,7 @@
 		B8FB5F172B5D91A6001C88BA /* NewPumpEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8FB5F162B5D91A6001C88BA /* NewPumpEvent.swift */; };
 		B8FDA0DE2B77D037007004A5 /* PumpManagerAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8FDA0DD2B77D037007004A5 /* PumpManagerAlert.swift */; };
 		B8FF961A2B4305A300C14280 /* NavigationLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = B8FF96192B4305A300C14280 /* NavigationLink.swift */; };
+		C287BED12F93C62000D1C892 /* DanaKitPasswordEntryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C287BED02F93C62000D1C892 /* DanaKitPasswordEntryView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -289,6 +290,7 @@
 		C187C199279086A8006E3557 /* DanaKitPlugin.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DanaKitPlugin.h; sourceTree = "<group>"; };
 		C187C1A2279087A4006E3557 /* OSLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OSLog.swift; sourceTree = "<group>"; };
 		C187C1A427908B1C006E3557 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C287BED02F93C62000D1C892 /* DanaKitPasswordEntryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DanaKitPasswordEntryView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -566,6 +568,7 @@
 				B864F7A12B49EF3800C503A2 /* DanaKitSetupCompleteView.swift */,
 				B8F4DCA52B94C0D800AB00E6 /* DanaIExplainationView.swift */,
 				B8F4DCA72B94C0E700AB00E6 /* DanaRSv3Explaination.swift */,
+				C287BED02F93C62000D1C892 /* DanaKitPasswordEntryView.swift */,
 			);
 			path = Onboarding;
 			sourceTree = "<group>";
@@ -861,6 +864,7 @@
 				B802D50A2C1F675600B92C35 /* ContinousBluetoothManager.swift in Sources */,
 				B8360A822B263ED700152188 /* DanaBolusCancelExtended.swift in Sources */,
 				B8360AA12B2A26EB00152188 /* DanaGeneralGetInitialScreenInformation.swift in Sources */,
+				C287BED12F93C62000D1C892 /* DanaKitPasswordEntryView.swift in Sources */,
 				B86326AC2B683E25005D8ECD /* PickerView.swift in Sources */,
 				B864F7A22B49EF3800C503A2 /* DanaKitSetupCompleteView.swift in Sources */,
 				B8360A9D2B2646A100152188 /* DanaGeneralAvgBolus.swift in Sources */,

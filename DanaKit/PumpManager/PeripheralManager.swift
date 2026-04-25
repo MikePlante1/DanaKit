@@ -343,6 +343,10 @@ extension PeripheralManager {
         log.info("processPairingRequest2 -> pairingKey: \(data.subdata(in: 2 ..< 4).hexString())")
         let pairingKey = data.subdata(in: 2 ..< 4)
         DanaKitEncryption.setPairingKeys(pairingKey: pairingKey, randomPairingKey: Data(), randomSyncKey: nil)
+
+        // Persist the pairingKey so reconnects can use sendPassKeyCheck instead of
+        // sendPairingRequest, avoiding the pump's OK confirmation prompt every time.
+        pumpManager.state.pairingKey = pairingKey
     }
 
     private func processConnectResponse(_ data: Data) {
@@ -353,8 +357,14 @@ extension PeripheralManager {
 
             pumpManager.state.ignorePassword = false
 
-            let (pairingKey, _) = DanaKitEncryption.getPairingKeys()
-            if !pairingKey.isEmpty {
+            var (pairingKey, _) = DanaKitEncryption.getPairingKeys()
+            if pairingKey.isEmpty {
+                // In-memory key is gone (new session). Try the key persisted from the last pairing.
+                // Using sendPassKeyCheck lets the pump skip its OK confirmation prompt on reconnects.
+                pairingKey = pumpManager.state.pairingKey
+            }
+
+            if !pairingKey.filter({ $0 != 0 }).isEmpty {
                 sendPassKeyCheck(pairingKey)
             } else {
                 sendPairingRequest()
@@ -445,15 +455,15 @@ extension PeripheralManager {
                 sendV3PairingInformation(1)
             }
         } else {
-            let highByte = UInt16((data[data.count - 1] & 0xFF) << 8)
-            let lowByte = UInt16(data[data.count - 2] & 0xFF)
-            let password = (highByte + lowByte) ^ 0x0D87
+            let highByte = UInt16(data[data.count - 1]) << 8
+            let lowByte = UInt16(data[data.count - 2])
+            let password = (highByte | lowByte) ^ 0x0D87
+            log.info("DEFAULT encryption: raw=\(data.hexString()) decoded=\(password) (0x\(String(password, radix: 16))) stored=\(pumpManager.state.devicePassword) (0x\(String(pumpManager.state.devicePassword, radix: 16))) ignorePassword=\(pumpManager.state.ignorePassword)")
             if password != pumpManager.state.devicePassword, !pumpManager.state.ignorePassword {
                 log.error("Invalid password")
                 connectionFailure(NSError(domain: "Invalid password", code: 0, userInfo: nil))
                 return
             }
-
             finishConnection()
         }
     }
@@ -569,6 +579,7 @@ extension PeripheralManager {
                 processEncryptionResponse(decryptedData)
                 return
             case DanaPacketType.OPCODE_ENCRYPTION__CHECK_PASSKEY:
+                log.info("CHECK_PASSKEY response: data[2]=0x\(String(decryptedData[2], radix: 16)) \(decryptedData[2] == 0x05 ? "(accepted - skipping OK prompt)" : "(rejected - falling back to pairing request)")")
                 if decryptedData[2] == 0x05 {
                     sendTimeInfo()
                 } else {
